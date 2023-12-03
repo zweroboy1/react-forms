@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { FormData } from '../../types';
 import { schema } from '../../utils/validationSchema';
+import { addCard } from '../../store/slices/cardSlice';
 
 const ReactHookForm: React.FC = () => {
+  const [selectedImage, setSelectedImage] = useState<
+    string | ArrayBuffer | null
+  >(null);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setSelectedImage(reader.result);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -15,7 +38,12 @@ const ReactHookForm: React.FC = () => {
   });
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    const newData = { ...data };
+    if (typeof selectedImage === 'string') {
+      newData.image = selectedImage;
+    }
+    dispatch(addCard(newData));
+    navigate('/');
   };
 
   return (
@@ -98,9 +126,25 @@ const ReactHookForm: React.FC = () => {
             Photo
           </label>
           <span className="form__error-container">
-            <input type="file" id="image" {...register('image')} />
+            <input
+              type="file"
+              id="image"
+              {...register('image')}
+              onChange={handleImageChange}
+            />
             {errors.image && (
               <span className="form__error">{errors.image.message}</span>
+            )}
+
+            {selectedImage && typeof selectedImage === 'string' && (
+              <>
+                <br />
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  style={{ maxWidth: '100px' }}
+                />
+              </>
             )}
           </span>
         </div>

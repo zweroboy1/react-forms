@@ -124,3 +124,36 @@ select {
     }
   }
 }
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.card {
+  &__container {
+    padding: 10px;
+    border: 0.5px solid #cbf5b3;
+    &:hover {
+      background-color: #e1ffdd;
+    }
+  }
+  &__no-message {
+    font-size: 1.5em;
+  }
+  &__list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+
+    & li {
+      font-weight: bold;
+    }
+    & span {
+      font-weight: normal;
+    }
+  }
+}

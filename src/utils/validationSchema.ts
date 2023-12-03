@@ -49,15 +49,21 @@ export const schema = yup.object().shape({
     ),
 
   image: yup
-    .mixed<FileList>()
+    .mixed<FileList | string>()
     .required('Image is required')
     .test('extension', 'Only PNG or JPEG format', (file) => {
       return (
-        file?.length === 1 && ['image/png', 'image/jpeg'].includes(file[0].type)
+        typeof file !== 'string' &&
+        file?.length === 1 &&
+        ['image/png', 'image/jpeg'].includes(file[0].type)
       );
     })
     .test('fileSize', 'The image size should be up to 1 MB', (file) => {
-      return file?.length === 1 && file[0].size <= 1048576;
+      return (
+        typeof file !== 'string' &&
+        file?.length === 1 &&
+        file[0].size <= 1048576
+      );
     }),
 
   country: yup.string().required('Country is required'), // to do
