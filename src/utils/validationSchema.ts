@@ -38,6 +38,7 @@ export const schema = yup.object().shape({
 
   password2: yup
     .string()
+    .required('Password confirmation is required')
     .oneOf([yup.ref('password1')], 'Passwords should be the same'),
 
   gender: yup
@@ -52,14 +53,17 @@ export const schema = yup.object().shape({
     .required('Image is required')
     .test('extension', 'Only PNG or JPEG format', (file) => {
       return (
-        !!file?.length && ['image/png', 'image/jpeg'].includes(file[0].type)
+        file?.length === 1 && ['image/png', 'image/jpeg'].includes(file[0].type)
       );
     })
     .test('fileSize', 'The image size should be up to 1 MB', (file) => {
-      return !!file?.length && file[0].size <= 1048576;
+      return file?.length === 1 && file[0].size <= 1048576;
     }),
 
   country: yup.string().required('Country is required'), // to do
 
-  accept: yup.boolean().oneOf([true], 'You should accept T&C'),
+  accept: yup
+    .boolean()
+    .required('You should accept T&C')
+    .oneOf([true], 'You should accept T&C'),
 });
