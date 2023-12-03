@@ -1,0 +1,16 @@
+.header {
+  background-color: #e1ffce;
+  &__list {
+    display: flex;
+    list-style: none;
+    padding: 1em;
+    gap: 1em;
+  }
+  &__item {
+    padding: 0.5em;
+
+    & a {
+      white-space: nowrap;
+    }
+  }
+}
