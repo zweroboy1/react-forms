@@ -1,7 +1,7 @@
 import React from 'react';
 
 const UncontrolledForm: React.FC = () => {
-  return <div>UncontrolledForm</div>;
+  return <h2>UncontrolledForm</h2>;
 };
 
 export { UncontrolledForm };
