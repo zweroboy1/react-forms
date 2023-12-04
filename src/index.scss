@@ -12,6 +12,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 a {
   font-weight: 500;
   color: #4e2e10;
@@ -157,7 +163,6 @@ select {
   flex-direction: column;
   width: 100%;
   gap: 5px;
-  cursor: pointer;
   &__success {
     & div:first-child {
       animation: changeColor 3s forwards;
@@ -169,9 +174,6 @@ select {
   &__container {
     padding: 10px;
     border: 0.5px solid #cbf5b3;
-    &:hover {
-      background-color: #e1ffdd;
-    }
   }
   &__no-message {
     font-size: 1.5em;

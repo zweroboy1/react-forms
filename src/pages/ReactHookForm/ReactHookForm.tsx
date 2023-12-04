@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FormData } from '../../types';
+import { CardData } from '../../types';
 import { schema } from '../../utils/validationSchema';
 import { addCard } from '../../store/slices/cardSlice';
 import { RootState } from '../../store/store';
@@ -29,7 +29,7 @@ const ReactHookForm: React.FC = () => {
     watch,
     trigger,
     formState: { errors, isValid },
-  } = useForm<FormData>({
+  } = useForm<CardData>({
     mode: 'onChange',
     resolver: yupResolver(schema),
   });
@@ -60,8 +60,10 @@ const ReactHookForm: React.FC = () => {
     if (
       selectedFile &&
       typeof selectedFile !== 'string' &&
+      selectedFile instanceof FileList &&
       selectedFile.length > 0
     ) {
+      console.log(selectedFile);
       const file = selectedFile?.[0];
       const reader = new FileReader();
 
@@ -88,7 +90,7 @@ const ReactHookForm: React.FC = () => {
     }
   }, [selectedPassword1, trigger]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: CardData) => {
     const newData = { ...data };
     if (typeof selectedImage === 'string') {
       newData.image = selectedImage;
@@ -162,7 +164,7 @@ const ReactHookForm: React.FC = () => {
             Gender
           </label>
           <span className="form__error-container">
-            <select {...register('gender')}>
+            <select id="gender" {...register('gender')}>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="unknown">Unknown</option>
@@ -178,7 +180,12 @@ const ReactHookForm: React.FC = () => {
             Photo
           </label>
           <span className="form__error-container">
-            <input type="file" id="image" {...register('image')} />
+            <input
+              type="file"
+              id="image"
+              {...register('image')}
+              multiple={false}
+            />
             {errors.image && (
               <span className="form__error">{errors.image.message}</span>
             )}
@@ -190,7 +197,7 @@ const ReactHookForm: React.FC = () => {
                   <br />
                   <img
                     src={selectedImage}
-                    alt="Selected"
+                    alt="Uploaded file"
                     style={{ maxWidth: '100px' }}
                   />
                 </>
@@ -227,11 +234,11 @@ const ReactHookForm: React.FC = () => {
           </span>
         </div>
         <div className="form__row">
-          <label className="form__label" htmlFor="tos">
+          <label className="form__label" htmlFor="accept">
             Accept T&C
           </label>
           <span className="form__error-container form__error-container">
-            <input type="checkbox" id="tos" {...register('accept')} />
+            <input type="checkbox" id="accept" {...register('accept')} />
             {errors.accept && (
               <span className="form__error form__error_checkbox">
                 {errors.accept.message}

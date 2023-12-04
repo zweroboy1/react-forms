@@ -51,21 +51,28 @@ export const schema = yup.object().shape({
     ),
 
   image: yup
-    .mixed<FileList | string>()
+    .mixed<FileList | File | string>()
     .required('Image is required')
     .test('extension', 'Only PNG or JPEG format', (file) => {
+      if (file instanceof FileList) {
+        if (file.length === 0) {
+          return false;
+        }
+        file = file[0];
+      }
       return (
         typeof file !== 'string' &&
-        file?.length === 1 &&
-        ['image/png', 'image/jpeg'].includes(file[0].type)
+        ['image/png', 'image/jpeg'].includes(file.type)
       );
     })
     .test('fileSize', 'The image size should be up to 1 MB', (file) => {
-      return (
-        typeof file !== 'string' &&
-        file?.length === 1 &&
-        file[0].size <= 1048576
-      );
+      if (file instanceof FileList) {
+        if (file.length === 0) {
+          return false;
+        }
+        file = file[0];
+      }
+      return typeof file !== 'string' && file.size <= 1048576;
     }),
 
   country: yup

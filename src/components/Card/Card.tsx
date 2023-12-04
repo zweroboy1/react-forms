@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormData } from '../../types';
+import { CardData } from '../../types';
 
 interface CardProps {
-  card: FormData;
+  card: CardData;
 }
 
 const Card: React.FC<CardProps> = ({ card }) => {

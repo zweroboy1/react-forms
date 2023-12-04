@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { FormData } from '../../types';
+import { CardData } from '../../types';
 
 interface State {
-  cards: FormData[];
+  cards: CardData[];
 }
 
 const initialState: State = {
