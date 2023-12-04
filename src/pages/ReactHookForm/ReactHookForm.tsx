@@ -1,29 +1,23 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FormData } from '../../types';
 import { schema } from '../../utils/validationSchema';
 import { addCard } from '../../store/slices/cardSlice';
+import { RootState } from '../../store/store';
 
 const ReactHookForm: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | null
   >(null);
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const reader = new FileReader();
+  const [countryOptions, setCountryOptions] = useState<string[]>();
 
-    reader.onloadend = () => {
-      setSelectedImage(reader.result);
-    };
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
+  const countriesList = useSelector(
+    (state: RootState) => state.countries.countries
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,17 +25,75 @@ const ReactHookForm: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
+    trigger,
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: 'onChange',
     resolver: yupResolver(schema),
   });
 
+  const selectedPassword1 = watch('password1');
+  const selectedPassword2 = watch('password2');
+  const selectedCountry = watch('country');
+  const selectedFile = watch('image');
+
+  useEffect(() => {
+    const searchCountry = () => {
+      setCountryOptions(
+        countriesList.filter((country) =>
+          country.toLowerCase().startsWith(selectedCountry.trim().toLowerCase())
+        )
+      );
+      if (countriesList.includes(selectedCountry)) {
+        setCountryOptions([]);
+        trigger('country');
+      }
+    };
+    if (selectedCountry) {
+      searchCountry();
+    }
+  }, [selectedCountry, countriesList, setValue, trigger]);
+
+  useEffect(() => {
+    if (
+      selectedFile &&
+      typeof selectedFile !== 'string' &&
+      selectedFile.length > 0
+    ) {
+      const file = selectedFile?.[0];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+      trigger('image');
+    }
+  }, [selectedFile, trigger]);
+
+  useEffect(() => {
+    if (selectedPassword2) {
+      trigger('password1');
+    }
+  }, [selectedPassword2, trigger]);
+
+  useEffect(() => {
+    if (selectedPassword1) {
+      trigger('password2');
+    }
+  }, [selectedPassword1, trigger]);
+
   const onSubmit = (data: FormData) => {
     const newData = { ...data };
     if (typeof selectedImage === 'string') {
       newData.image = selectedImage;
     }
+
     dispatch(addCard(newData));
     navigate('/');
   };
@@ -126,26 +178,23 @@ const ReactHookForm: React.FC = () => {
             Photo
           </label>
           <span className="form__error-container">
-            <input
-              type="file"
-              id="image"
-              {...register('image')}
-              onChange={handleImageChange}
-            />
+            <input type="file" id="image" {...register('image')} />
             {errors.image && (
               <span className="form__error">{errors.image.message}</span>
             )}
 
-            {selectedImage && typeof selectedImage === 'string' && (
-              <>
-                <br />
-                <img
-                  src={selectedImage}
-                  alt="Selected"
-                  style={{ maxWidth: '100px' }}
-                />
-              </>
-            )}
+            {!errors.image &&
+              selectedImage &&
+              typeof selectedImage === 'string' && (
+                <>
+                  <br />
+                  <img
+                    src={selectedImage}
+                    alt="Selected"
+                    style={{ maxWidth: '100px' }}
+                  />
+                </>
+              )}
           </span>
         </div>
         <div className="form__row">
@@ -153,10 +202,28 @@ const ReactHookForm: React.FC = () => {
             Country
           </label>
           <span className="form__error-container">
-            <input id="country" {...register('country')} />
+            <input
+              id="country"
+              {...register('country')}
+              className="form__country"
+              autoComplete="off"
+            />
             {errors.country && (
               <span className="form__error">{errors.country.message}</span>
             )}
+            {
+              <ul className="form__country-list">
+                {countryOptions?.map((country) => (
+                  <li
+                    className="form__country-option"
+                    key={country}
+                    onClick={() => setValue('country', country)}
+                  >
+                    {country}
+                  </li>
+                ))}
+              </ul>
+            }
           </span>
         </div>
         <div className="form__row">

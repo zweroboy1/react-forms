@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { COUNTRIES } from '../constants/countries';
 
 const emailRegex = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\.\-]+$/;
 
@@ -7,7 +8,6 @@ export const schema = yup.object().shape({
     .string()
     .required('Name is required')
     .matches(/^[A-ZА-ЯЇЁ].*$/, 'First letter should be uppercased')
-
     .matches(/^[A-ZА-ЯЇЁА-Яa-zа-яъїыё\-\. ]*$/, 'Only letters are allowed'),
 
   age: yup
@@ -66,7 +66,12 @@ export const schema = yup.object().shape({
       );
     }),
 
-  country: yup.string().required('Country is required'), // to do
+  country: yup
+    .string()
+    .required('Country is required')
+    .test('valid-country', 'Invalid country', (value) => {
+      return COUNTRIES.includes(value);
+    }),
 
   accept: yup
     .boolean()

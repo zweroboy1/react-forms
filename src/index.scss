@@ -123,6 +123,33 @@ select {
       background-color: initial;
     }
   }
+
+  &__country-list {
+    position: absolute;
+    background: #cbf5b3;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 228px;
+    max-height: 160px;
+    overflow-y: auto;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  &__country-option {
+    box-sizing: border-box;
+    padding: 5px;
+    border: 1px solid #1e8b0f;
+    border-bottom: 0;
+    &:last-child {
+      border-bottom: 1px solid #1e8b0f;
+    }
+    &:hover {
+      background-color: #e1ffdd;
+    }
+  }
 }
 
 .cards {
