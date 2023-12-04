@@ -1,10 +1,11 @@
 import React, { FormEvent, useState } from 'react';
 import * as yup from 'yup';
 import { schema } from '../../utils/validationSchema';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { CardData } from '../../types/index';
 import { addCard } from '../../store/slices/cardSlice';
+import { RootState } from '../../store/store';
 
 interface FormErrors {
   [key: string]: string;
@@ -15,6 +16,9 @@ const UncontrolledForm: React.FC = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<FormErrors>({});
   const [base64String, setBase64String] = useState<string>('');
+  const countriesList = useSelector(
+    (state: RootState) => state.countries.countries
+  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +43,6 @@ const UncontrolledForm: React.FC = () => {
     setErrors({});
     try {
       await schema.validate(cardData, { abortEarly: false });
-      console.log('Данные формы валидны!');
       sendCard(cardData);
     } catch (error: unknown) {
       if (error instanceof yup.ValidationError) {
@@ -183,22 +186,19 @@ const UncontrolledForm: React.FC = () => {
               name="country"
               className="form__country"
               autoComplete="off"
+              list="countriesList"
             />
             {errors.country && (
               <span className="form__error">{errors.country}</span>
             )}
-            {/*
-              <ul className="form__country-list">
-                {countryOptions?.map((country) => (
-                  <li
-                    className="form__country-option"
-                    key={country}
-                    onClick={() => setValue('country', country)}
-                  >
-                    {country}
-                  </li>
-                ))}
-              </ul>*/}
+
+            <datalist id="countriesList">
+              {countriesList.map((country) => (
+                <option className="form__country-option" key={country}>
+                  {country}
+                </option>
+              ))}
+            </datalist>
           </span>
         </div>
         <div className="form__row">
