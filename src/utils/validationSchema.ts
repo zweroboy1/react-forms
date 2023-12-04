@@ -1,5 +1,7 @@
 import * as yup from 'yup';
-import { COUNTRIES } from '../constants/countries';
+import { store } from '../store/store';
+
+const countries = store.getState().countries.countries;
 
 const emailRegex = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\.\-]+$/;
 
@@ -70,7 +72,7 @@ export const schema = yup.object().shape({
     .string()
     .required('Country is required')
     .test('valid-country', 'Invalid country', (value) => {
-      return COUNTRIES.includes(value);
+      return countries.includes(value);
     }),
 
   accept: yup

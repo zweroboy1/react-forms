@@ -95,7 +95,7 @@ const ReactHookForm: React.FC = () => {
     }
 
     dispatch(addCard(newData));
-    navigate('/');
+    navigate('/', { state: { success: true } });
   };
 
   return (

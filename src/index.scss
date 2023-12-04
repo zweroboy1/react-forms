@@ -158,6 +158,11 @@ select {
   width: 100%;
   gap: 5px;
   cursor: pointer;
+  &__success {
+    & div:first-child {
+      animation: changeColor 3s forwards;
+    }
+  }
 }
 
 .card {
@@ -182,5 +187,14 @@ select {
     & span {
       font-weight: normal;
     }
+  }
+}
+
+@keyframes changeColor {
+  from {
+    background-color: #f3e95e;
+  }
+  to {
+    background-color: #ffffff;
   }
 }
