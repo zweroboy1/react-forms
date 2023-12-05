@@ -7,6 +7,7 @@ import { CardData } from '../../types';
 import { schema } from '../../utils/validationSchema';
 import { addCard } from '../../store/slices/cardSlice';
 import { RootState } from '../../store/store';
+import { PasswordStrength } from '../../components/PasswordStrength/PasswordStrength';
 
 const ReactHookForm: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
@@ -14,6 +15,7 @@ const ReactHookForm: React.FC = () => {
   >(null);
 
   const [countryOptions, setCountryOptions] = useState<string[]>();
+  const [currentPassword, setCurrentPassword] = useState<string>('');
 
   const countriesList = useSelector(
     (state: RootState) => state.countries.countries
@@ -63,7 +65,6 @@ const ReactHookForm: React.FC = () => {
       selectedFile instanceof FileList &&
       selectedFile.length > 0
     ) {
-      console.log(selectedFile);
       const file = selectedFile?.[0];
       const reader = new FileReader();
 
@@ -88,6 +89,7 @@ const ReactHookForm: React.FC = () => {
     if (selectedPassword1) {
       trigger('password2');
     }
+    setCurrentPassword(selectedPassword1);
   }, [selectedPassword1, trigger]);
 
   const onSubmit = (data: CardData) => {
@@ -146,6 +148,9 @@ const ReactHookForm: React.FC = () => {
             {errors.password1 && (
               <span className="form__error">{errors.password1.message}</span>
             )}
+            <span className="form__indicator">
+              <PasswordStrength password={currentPassword} />
+            </span>
           </span>
         </div>
         <div className="form__row">

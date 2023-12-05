@@ -156,6 +156,19 @@ select {
       background-color: #e1ffdd;
     }
   }
+
+  &__indicator {
+    position: absolute;
+    display: none;
+    height: 16px;
+    width: 120%;
+    top: 40px;
+    left: -10%;
+  }
+}
+
+#password1:focus ~ .form__indicator {
+  display: flex;
 }
 
 .cards {
@@ -168,6 +181,10 @@ select {
       animation: changeColor 3s forwards;
     }
   }
+  &__no-message {
+    margin-top: 1em;
+    font-size: 1.2em;
+  }
 }
 
 .card {
@@ -175,9 +192,7 @@ select {
     padding: 10px;
     border: 0.5px solid #cbf5b3;
   }
-  &__no-message {
-    font-size: 1.5em;
-  }
+
   &__list {
     display: flex;
     flex-direction: column;
@@ -189,6 +204,31 @@ select {
     & span {
       font-weight: normal;
     }
+  }
+}
+
+.password-strength {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  font-size: 10px;
+  background-color: #f0f1f0;
+  border: 1px solid #213547;
+  z-index: 1;
+
+  &__text {
+    position: absolute;
+    height: 100%;
+    z-index: 3;
+  }
+
+  &__line {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    z-index: 2;
   }
 }
 

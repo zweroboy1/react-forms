@@ -36,7 +36,10 @@ export const schema = yup.object().shape({
     .matches(/[0-9]/, 'Should contain at least one number')
     .matches(/[A-ZА-ЯЇЁ]/, 'Should contain at least one uppercase character')
     .matches(/[a-zа-яъїыё]/, 'Should contain at least one lowercase character')
-    .matches(/\W/, 'Should contain at least one special character'),
+    .matches(
+      /[!@#$%^&*()_+={[}\]:;"'<,>.?/~\\|]/,
+      'Should contain at least one special character'
+    ),
 
   password2: yup
     .string()

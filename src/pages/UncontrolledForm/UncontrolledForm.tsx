@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { CardData } from '../../types/index';
 import { addCard } from '../../store/slices/cardSlice';
 import { RootState } from '../../store/store';
+import { PasswordStrength } from '../../components/PasswordStrength/PasswordStrength';
 
 interface FormErrors {
   [key: string]: string;
@@ -16,6 +17,7 @@ const UncontrolledForm: React.FC = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<FormErrors>({});
   const [base64String, setBase64String] = useState<string>('');
+  const [currentPassword, setCurrentPassword] = useState<string>('');
   const countriesList = useSelector(
     (state: RootState) => state.countries.countries
   );
@@ -116,10 +118,17 @@ const UncontrolledForm: React.FC = () => {
             Password
           </label>
           <span className="form__error-container">
-            <input id="password1" name="password1" />
+            <input
+              id="password1"
+              name="password1"
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
             {errors.password1 && (
               <span className="form__error">{errors.password1}</span>
             )}
+            <span className="form__indicator">
+              <PasswordStrength password={currentPassword} />
+            </span>
           </span>
         </div>
         <div className="form__row">
