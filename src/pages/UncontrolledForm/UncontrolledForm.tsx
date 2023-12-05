@@ -7,6 +7,7 @@ import { CardData } from '../../types/index';
 import { addCard } from '../../store/slices/cardSlice';
 import { RootState } from '../../store/store';
 import { PasswordStrength } from '../../components/PasswordStrength/PasswordStrength';
+import { IMAGE_FORMATS, MAX_FILE_SIZE } from '../../constants';
 
 interface FormErrors {
   [key: string]: string;
@@ -72,6 +73,9 @@ const UncontrolledForm: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE || !IMAGE_FORMATS.includes(file.type)) {
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function (event) {
         setBase64String(event.target?.result as string);

@@ -1,5 +1,11 @@
 import * as yup from 'yup';
 import { store } from '../store/store';
+import {
+  IMAGE_FORMATS,
+  IMAGE_FORMAT_ERROR,
+  IMAGE_SIZE_ERROR,
+  MAX_FILE_SIZE,
+} from '../constants';
 
 const countries = store.getState().countries.countries;
 
@@ -56,26 +62,23 @@ export const schema = yup.object().shape({
   image: yup
     .mixed<FileList | File | string>()
     .required('Image is required')
-    .test('extension', 'Only PNG or JPEG format', (file) => {
+    .test('extension', IMAGE_FORMAT_ERROR, (file) => {
       if (file instanceof FileList) {
         if (file.length === 0) {
           return false;
         }
         file = file[0];
       }
-      return (
-        typeof file !== 'string' &&
-        ['image/png', 'image/jpeg'].includes(file.type)
-      );
+      return typeof file !== 'string' && IMAGE_FORMATS.includes(file.type);
     })
-    .test('fileSize', 'The image size should be up to 1 MB', (file) => {
+    .test('fileSize', IMAGE_SIZE_ERROR, (file) => {
       if (file instanceof FileList) {
         if (file.length === 0) {
           return false;
         }
         file = file[0];
       }
-      return typeof file !== 'string' && file.size <= 1048576;
+      return typeof file !== 'string' && file.size <= MAX_FILE_SIZE;
     }),
 
   country: yup
